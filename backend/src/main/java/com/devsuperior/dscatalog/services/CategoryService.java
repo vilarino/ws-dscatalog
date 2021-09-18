@@ -3,7 +3,10 @@ package com.devsuperior.dscatalog.services;
 import com.devsuperior.dscatalog.dto.CategoryDTO;
 import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.repositories.CategoryRepository;
+import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +56,18 @@ public class CategoryService {
 
             return new CategoryDTO(repository.save(entity));
         } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException("The register that you try update, don't not exist.");
+            throw new ResourceNotFoundException("The register that you try update not found.");
+        }
+    }
+
+    public void delete(Long id) {
+        try {
+
+            repository.deleteById(id);
+        }catch (EmptyResultDataAccessException e){
+            throw new ResourceNotFoundException("The register that you try delete not found ");
+        } catch (DataIntegrityViolationException e){
+            throw new DatabaseException("Integrity violation");
         }
     }
 }
