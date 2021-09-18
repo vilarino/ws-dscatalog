@@ -7,6 +7,8 @@ import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +27,9 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CategoryDTO> findAll() {
-        return repository.findAll()
-                .stream().map(CategoryDTO::new)
-                .collect(Collectors.toList());
+    public Page<CategoryDTO> findAllPaged(PageRequest pageRequest) {
+        Page<Category> list = repository.findAll(pageRequest);
+        return list.map(CategoryDTO::new);
     }
 
     @Transactional(readOnly = true)
@@ -64,9 +65,9 @@ public class CategoryService {
         try {
 
             repository.deleteById(id);
-        }catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException("The register that you try delete not found ");
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrity violation");
         }
     }
