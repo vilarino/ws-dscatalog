@@ -1,9 +1,8 @@
 package com.devsuperior.dscatalog.resources;
 
-import com.devsuperior.dscatalog.dto.ProductDTO;
 import com.devsuperior.dscatalog.dto.UserDTO;
 import com.devsuperior.dscatalog.dto.UserInsertDTO;
-import com.devsuperior.dscatalog.services.ProductService;
+import com.devsuperior.dscatalog.dto.UserUpdateDTO;
 import com.devsuperior.dscatalog.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,10 +48,10 @@ public class UserResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> update(@Valid @PathVariable Long id, @RequestBody UserDTO dto) {
-        dto = service.update(id, dto);
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
+        UserDTO newDto = service.update(id, dto);
 
-        return ResponseEntity.ok().body(dto);
+        return ResponseEntity.ok().body(newDto);
     }
 
     @DeleteMapping(value = "/{id}")
